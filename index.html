@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To You — A Letter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #15100c;
+    --ink-soft: #1f1712;
+    --paper: #f2e6c9;
+    --paper-dim: #e4d4a8;
+    --ember: #d98b3f;
+    --ember-bright: #f0aa5e;
+    --wine: #7c2e34;
+    --wine-deep: #5a1f24;
+    --gold: #c9a15f;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body{
+    background: var(--ink);
+    color: var(--paper-dim);
+    font-family: 'EB Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  canvas#embers{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.75;
+  }
+
+  /* ---------- HERO / ENVELOPE ---------- */
+
+  .hero{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(217,139,63,0.08), transparent 70%),
+      var(--ink);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .hero-eyebrow{
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    font-size: 0.95rem;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.3s;
+  }
+
+  .envelope-wrap{
+    position: relative;
+    width: min(360px, 80vw);
+    aspect-ratio: 3 / 2;
+    margin: 2.5rem 0 2rem;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.6s;
+  }
+
+  .envelope{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transform-style: preserve-3d;
+  }
+
+  .env-body{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #e9dcb8, #d8c393);
+    border-radius: 3px;
+    box-shadow: 0 25px 60px -15px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,0,0,0.15);
+  }
+
+  .env-flap{
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(160deg, #ddcda0, #cbb586);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 1.1s cubic-bezier(.6,.05,.2,1);
+    z-index: 3;
+  }
+
+  .envelope.open .env-flap{
+    transform: rotateX(180deg) translateY(-2px);
+  }
+
+  .wax-seal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 62px;
+    height: 62px;
+    transform: translate(-50%, -46%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #9a3d43, var(--wine) 55%, var(--wine-deep) 100%);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.5), inset 0 -4px 8px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+  }
+
+  .wax-seal svg{ width: 30px; height: 30px; opacity: 0.85; }
+
+  .envelope.open .wax-seal{
+    transform: translate(-50%, -46%) scale(0.4) rotate(25deg);
+    opacity: 0;
+  }
+
+  .env-shadow-line{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, transparent 60%, rgba(0,0,0,0.18));
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  .hero-hint{
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    opacity: 0.55;
+    transition: opacity 0.5s ease;
+  }
+
+  .envelope.open ~ .hero-hint{ opacity: 0; }
+
+  .hero-title{
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--paper);
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.9s;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity: 0; transform: translateY(14px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  .scroll-cue{
+    position: absolute;
+    bottom: 2.2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.8s ease 0.4s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .scroll-cue.show{ opacity: 0.75; }
+
+  .scroll-cue .line{
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: dropPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dropPulse{
+    0%, 100% { transform: scaleY(1); opacity: 0.6; }
+    50% { transform: scaleY(0.6); opacity: 1; }
+  }
+
+  /* ---------- LETTER ---------- */
+
+  .letter-section{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .letter-paper{
+    max-width: 620px;
+    width: 100%;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.02), transparent 6%),
+      var(--paper);
+    color: #2a2118;
+    border-radius: 2px;
+    padding: clamp(2.2rem, 6vw, 4.2rem) clamp(1.8rem, 6vw, 3.6rem);
+    box-shadow: 0 40px 90px -25px rgba(0,0,0,0.65);
+    position: relative;
+  }
+
+  .letter-paper::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(rgba(120,90,50,0.05) 0px, rgba(120,90,50,0.05) 1px, transparent 1px, transparent 34px);
+    pointer-events: none;
+  }
+
+  .letter-date{
+    font-style: italic;
+    color: #7a6a4a;
+    font-size: 0.95rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .letter-greeting{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.2vw, 1.9rem);
+    margin-bottom: 1.6rem;
+    color: var(--wine);
+  }
+
+  .letter-p{
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    line-height: 1.85;
+    margin-bottom: 1.4rem;
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(10px);
+    transition: opacity 1.1s ease, filter 1.1s ease, transform 1.1s ease;
+  }
+
+  .letter-p.visible{
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+
+  .letter-p:first-of-type::first-letter{
+    font-family: 'Playfair Display', serif;
+    font-size: 3.4rem;
+    float: left;
+    line-height: 0.8;
+    padding: 0.1rem 0.5rem 0 0;
+    color: var(--wine);
+  }
+
+  .divider{
+    display: flex;
+    justify-content: center;
+    margin: 2.2rem 0;
+  }
+
+  .divider svg{
+    width: 140px;
+    height: 24px;
+  }
+
+  .divider path{
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    transition: stroke-dashoffset 1.4s ease;
+  }
+
+  .divider.visible path{ stroke-dashoffset: 0; }
+
+  .letter-signoff{
+    margin-top: 2.4rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    color: var(--wine);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .letter-signoff.visible{ opacity: 1; transform: translateY(0); }
+
+  /* ---------- CLOSING ---------- */
+
+  .closing{
+    position: relative;
+    z-index: 2;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem 6rem;
+    gap: 1.8rem;
+  }
+
+  .candle{
+    width: 10px;
+    height: 46px;
+    background: linear-gradient(180deg, #f1e3bd, #d8c493);
+    border-radius: 2px;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(217,139,63,0.25);
+  }
+
+  .flame{
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    width: 12px;
+    height: 26px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 50% 70%, #fff2c9 0%, var(--ember-bright) 35%, var(--ember) 65%, transparent 80%);
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    animation: flicker 2.6s ease-in-out infinite;
+    filter: blur(0.3px);
+  }
+
+  @keyframes flicker{
+    0%, 100% { transform: translateX(-50%) scale(1) rotate(-1deg); }
+    25% { transform: translateX(-50%) scale(1.05, 0.95) rotate(2deg); }
+    50% { transform: translateX(-48%) scale(0.95, 1.05) rotate(-2deg); }
+    75% { transform: translateX(-52%) scale(1.02, 0.98) rotate(1deg); }
+  }
+
+  .closing-note{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--paper-dim);
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    max-width: 420px;
+    opacity: 0.85;
+  }
+
+  .reseal-btn{
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    padding: 0.7rem 1.6rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  .reseal-btn:hover, .reseal-btn:focus-visible{
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  .reseal-btn:focus-visible{ outline: 2px solid var(--paper); outline-offset: 3px; }
+
+  .envelope:focus-visible{ outline: 2px solid var(--gold); outline-offset: 6px; }
+</style>
+</head>
+<body>
+
+<canvas id="embers"></canvas>
+
+<section class="hero" id="hero">
+  <p class="hero-eyebrow">a letter, sealed for you</p>
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Break the wax seal to open the letter">
+      <div class="env-body"></div>
+      <div class="env-shadow-line"></div>
+      <div class="env-flap"></div>
+      <div class="wax-seal">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.1C.8 8.2 2.6 4.8 6 4.2c2-.35 3.7.5 6 2.6 2.3-2.1 4-2.95 6-2.6 3.4.6 5.2 4 3.6 7.7C19.5 16.4 12 21 12 21z" fill="#f2e6c9"/></svg>
+      </div>
+    </div>
+    <p class="hero-hint">break the seal</p>
+  </div>
+  <h1 class="hero-title">before you scroll any further —</h1>
+  <div class="scroll-cue" id="scrollCue"><span>read on</span><span class="line"></span></div>
+</section>
+
+<section class="letter-section">
+  <article class="letter-paper">
+    <p class="letter-date">tonight, by candlelight</p>
+    <p class="letter-greeting">My dearest,</p>
+
+    <p class="letter-p">I keep starting this letter over. Every version sounds too small for what I mean, so I'm giving up on getting it right and just going to tell you the truth instead: you make ordinary days feel worth writing down.</p>
+
+    <p class="letter-p">It's the small things, mostly. The way you save me the last bite without being asked. The way a hard week gets lighter the moment I hear your key in the door. I used to think love announced itself — it doesn't. It just quietly rearranges your whole life until you can't remember the shape of it before.</p>
+
+    <div class="divider"><svg viewBox="0 0 140 24"><path d="M2 12 C 30 2, 45 22, 70 12 S 110 2, 138 12"/></svg></div>
+
+    <p class="letter-p">I think about the version of me who hadn't met you yet, and I feel a little sorry for him — he had no idea what he was waiting for. He was lonelier than he let on. He kept the porch light on for something he couldn't name.</p>
+
+    <p class="letter-p">Now I know. It was this. It was you, sitting across from me, laughing at something not even that funny, making the whole room warmer just by being in it.</p>
+
+    <div class="divider"><svg viewBox="0 0 140 24"><path d="M2 12 C 30 2, 45 22, 70 12 S 110 2, 138 12"/></svg></div>
+
+    <p class="letter-p">So here's the truth I keep almost-writing and finally will: I choose you. Not just on the easy days, but on the loud, tired, in-between ones too. Today, tomorrow, and every unremarkable Tuesday after that.</p>
+
+    <p class="letter-signoff">Forever yours.</p>
+  </article>
+</section>
+
+<section class="closing">
+  <div class="candle"><div class="flame"></div></div>
+  <p class="closing-note">The seal can be broken as many times as you'd like.</p>
+  <button class="reseal-btn" id="resealBtn">Read it again</button>
+</section>
+
+<script>
+  // ---------- Envelope open interaction ----------
+  const envelope = document.getElementById('envelope');
+  const scrollCue = document.getElementById('scrollCue');
+
+  function openEnvelope(){
+    if (envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    setTimeout(() => scrollCue.classList.add('show'), 900);
+  }
+
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+  });
+
+  document.getElementById('resealBtn').addEventListener('click', () => {
+    envelope.classList.remove('open');
+    scrollCue.classList.remove('show');
+    document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // ---------- Scroll reveal for letter paragraphs & dividers ----------
+  const revealTargets = document.querySelectorAll('.letter-p, .divider, .letter-signoff');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.3 });
+  revealTargets.forEach(el => io.observe(el));
+
+  // ---------- Ambient ember canvas ----------
+  const canvas = document.getElementById('embers');
+  const ctx = canvas.getContext('2d');
+  let w, h, embers = [];
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function makeEmber(){
+    return {
+      x: Math.random() * w,
+      y: h + Math.random() * 100,
+      r: 0.6 + Math.random() * 1.8,
+      speed: 0.25 + Math.random() * 0.6,
+      drift: (Math.random() - 0.5) * 0.4,
+      alpha: 0.15 + Math.random() * 0.5,
+      flicker: Math.random() * Math.PI * 2
+    };
+  }
+
+  const emberCount = prefersReduced ? 0 : Math.min(70, Math.floor(w / 18));
+  for (let i = 0; i < emberCount; i++){
+    const e = makeEmber();
+    e.y = Math.random() * h;
+    embers.push(e);
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    embers.forEach(e => {
+      e.y -= e.speed;
+      e.x += Math.sin(e.flicker) * 0.3 + e.drift * 0.2;
+      e.flicker += 0.02;
+      if (e.y < -10){
+        e.y = h + 10;
+        e.x = Math.random() * w;
+      }
+      const glow = 0.5 + 0.5 * Math.sin(e.flicker * 2);
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(232, 165, 75, ${e.alpha * glow})`;
+      ctx.fill();
+    });
+    if (!prefersReduced) requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+
+</body>
+</html>
