@@ -207,7 +207,7 @@ section.panel{ padding:6rem 1.5rem; position:relative; }
 .tl-item p{ color:#7a5f72; font-size:1.05rem; line-height:1.6; }
 
 /* ---------- GALLERY ---------- */
-.gallery{ background:linear-gradient(180deg,#fff, var(--lavender) 100%); }
+.gallery{ background:linear-gradient(180deg,#fff, var(--lavender) 100%); flex-wrap:nonwrap; display:flex; justify-content:center; overflow-x:auto; gap:20px;}
 .heart-grid{
   max-width:1000px; margin:0 auto; display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:2.2rem 1.6rem;
@@ -219,6 +219,7 @@ section.panel{ padding:6rem 1.5rem; position:relative; }
 .heart-shape img{
   width:100%; height:100%;
    object-fit:cover;
+   border-raduis:inherit;
   clip-path:path('M75,130 C10,90 0,45 25,22 C45,4 70,12 75,32 C80,12 105,4 125,22 C150,45 140,90 75,130 Z');
   background:linear-gradient(135deg, var(--pink), var(--lavender));
   display:flex; align-items:center; justify-content:center;
