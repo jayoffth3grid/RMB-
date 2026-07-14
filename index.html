@@ -214,17 +214,18 @@ section.panel{ padding:6rem 1.5rem; position:relative; }
   place-items:center;
 }
 .heart-frame{
-  position:relative; width:150px; height:135px; cursor:pointer;
+  position:relative; 
+   width:150px; 
+   eight:135px; cursor:pointer;
 }
 .heart-shape img{
   width:100%; 
   height:100%;
-  object-fit:cover;
-  object-position: center 30%;
+  object-fit:contain;
   clip-path:path("M75,130 C10,90 0,45 25,22 C45,4 70,12 75,32 C80,12 105,4 125,22 C150,45 140,90 75,130 Z");
+  background:white;(135deg, var(--pink), var(--lavender));
+  display:block; align-items:center; justify-content:center;
 }
-  background:linear-gradient(135deg, var(--pink), var(--lavender));
-  display:flex; align-items:center; justify-content:center;
   overflow:hidden; border:2px solid #fff;
   box-shadow:0 8px 22px rgba(90,58,82,0.18);
   background-size:cover; background-position:center;
