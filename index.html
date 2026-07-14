@@ -216,8 +216,12 @@ section.panel{ padding:6rem 1.5rem; position:relative; }
 .heart-frame{
   position:relative; width:150px; height:135px; cursor:pointer;
 }
-.heart-shape{
-  width:100%; height:100%;
+.heart-shape img{
+   width:100%; 
+   height:100%;
+   object-fit:cover;
+   display:block;
+}
   clip-path:path('M75,130 C10,90 0,45 25,22 C45,4 70,12 75,32 C80,12 105,4 125,22 C150,45 140,90 75,130 Z');
   background:linear-gradient(135deg, var(--pink), var(--lavender));
   display:flex; align-items:center; justify-content:center;
@@ -309,11 +313,11 @@ footer{
 <section class="hero">
   <div class="stars" id="star-field"></div>
   <div class="hero-content">
-    <span class="eyebrow ui-font">National Girlfriend's Day</span>
+    <span class="allura" style="font-size: 60px;">Happy National Girlfriend's Day</span>
     <!-- EDIT: HERO TEXT — swap in her name below -->
     <h1>To My Forever, <br>Love</h1>
-    <p class="sub">Every day with you feels like a page from our own love story — here's a little corner of the internet made just for you.</p>
-    <div class="date-badge">🤍 August 1st</div>
+    <p class="sub"> Kila siku nkiwa na wewe i usually have the best mood ever — So for  my Rita,here's a little corner of the internet made just for you.</p>
+    <div class="date-badge">🤍</div>
   </div>
   <div class="florals">
     <div class="bloom rose"><span class="petal p1"></span><span class="petal p2"></span><span class="petal p3"></span><span class="petal p4"></span><span class="petal p5"></span><span class="center"></span></div>
@@ -382,28 +386,34 @@ footer{
   <div class="heart-grid reveal">
     <!-- Click any heart to upload a photo from your device. -->
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image.jpg" alt="image 1">
+      </div>
     </label>
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image1.jpg" alt="image 2">
+      </div>
     </label>
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image2.jpg" alt="image 3">
+      </div>
     </label>
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image3.jpg" alt="image 4">
+      </div>
     </label>
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image4.jpg" alt="image 5">
+      </div>
     </label>
     <label class="heart-frame">
-      <div class="heart-shape"><span class="plus">+ Add<br>Photo</span></div>
-      <input type="file" accept="image/*">
+      <div class="heart-shape">
+         <img src="image5.jpg" alt="image 6">
+      </div>
     </label>
   </div>
 </section>
