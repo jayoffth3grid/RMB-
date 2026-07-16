@@ -143,7 +143,7 @@ h1,h2,h3,.script{font-family:'Great Vibes', cursive; font-weight:400;}
   border-radius:999px; padding:0.5rem 0.9rem 0.5rem 0.5rem;
   box-shadow:0 6px 20px rgba(90,58,82,0.15);
 }
-#play-toggle{
+#unmute-toggle{
   width:38px; height:38px; border-radius:50%; border:none; cursor:pointer;
   background:linear-gradient(135deg, var(--pink-deep), var(--red));
   color:#fff; font-size:1rem; display:flex; align-items:center; justify-content:center;
@@ -305,11 +305,11 @@ footer{
 <!-- MUSIC PLAYER -->
 <!-- EDIT: MUSIC — place your file next to this HTML file, named exactly "otd-njerae.mp3",
      or change the src path below to match wherever you put it. -->
-<audio id="bg-audio" loop preload="metadata" muted>
+<audio id="bg-audio" loop preload="metadata">
   <source src="otd-njerae.mp3" type="audio/mpeg">
 </audio>
 <div id="music-player">
-  <button id="play-toggle" aria-label="Play music">▶</button>
+  <button id="unmute-toggle" aria-label="Unmute music">🔊</button>
   <div id="music-label" class="ui-font">
     <div class="song">OTD</div>
     <div>Njerae</div>
@@ -379,7 +379,7 @@ footer{
       <span class="tl-date">A Milestone</span>
       <h3>Made It Official</h3>
       <p>This is when i realized that out of everyone, you were the  only one i wanted to keep, and from that day you became My Favorite Person🫶🏾🥹,My Peace🫂🩶
-      , and the one who makes ordinary days feel extraordinary🌸💫.</p>
+       , and the one who makes ordinary days feel extraordinary🌸💫.</p>
     </div>
     <div class="tl-item reveal">
       <span class="tl-dot"></span>
@@ -489,54 +489,51 @@ function spawnHeart(container, big){
 }
 setInterval(()=>spawnHeart(heartLayer,false), 900);
 
-// ---------- music player ----------
+// ---------- music player with autoplay ----------
 const audio = document.getElementById('bg-audio');
-const playBtn = document.getElementById('play-toggle');
-let playing = false;
+const unmuteBtn = document.getElementById('unmute-toggle');
+let isUnmuted = false;
 
-// Auto-play music immediately on page load
+// Attempt to autoplay music on page load
 window.addEventListener('load', ()=>{
-  audio.muted = false;
   audio.play().then(()=>{
-    playing = true;
-    playBtn.textContent='❚❚';
+    isUnmuted = true;
+    unmuteBtn.textContent='🔊';
   }).catch(()=>{
-    // If autoplay is blocked, play on first user interaction
+    // If autoplay is blocked, show button and wait for user interaction
     document.addEventListener('click', attemptAutoPlay, {once: true});
   });
 });
 
 function attemptAutoPlay(){
-  audio.muted = false;
   audio.play().then(()=>{
-    playing = true;
-    playBtn.textContent='❚❚';
+    isUnmuted = true;
+    unmuteBtn.textContent='🔊';
   }).catch(err=>console.log('Audio play failed:', err));
 }
 
-// Play/pause button handler
-playBtn.addEventListener('click', ()=>{
-  if(!playing){
-    audio.muted = false;
+// Unmute button handler
+unmuteBtn.addEventListener('click', ()=>{
+  if(!isUnmuted){
     audio.play().catch(()=>{ /* file missing until user adds it */ });
-    playBtn.textContent='❚❚';
-    playing = true;
+    unmuteBtn.textContent='🔊';
+    isUnmuted = true;
   } else {
     audio.pause();
-    playBtn.textContent='▶';
-    playing = false;
+    unmuteBtn.textContent='🔇';
+    isUnmuted = false;
   }
 });
 
-// Update button when audio ends or is paused externally
+// Update button when audio state changes
 audio.addEventListener('play', ()=>{
-  playing = true;
-  playBtn.textContent='❚❚';
+  isUnmuted = true;
+  unmuteBtn.textContent='🔊';
 });
 
 audio.addEventListener('pause', ()=>{
-  playing = false;
-  playBtn.textContent='▶';
+  isUnmuted = false;
+  unmuteBtn.textContent='🔇';
 });
 
 // ---------- gallery uploads ----------
