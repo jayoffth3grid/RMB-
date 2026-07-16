@@ -305,7 +305,7 @@ footer{
 <!-- MUSIC PLAYER -->
 <!-- EDIT: MUSIC — place your file next to this HTML file, named exactly "otd-njerae.mp3",
      or change the src path below to match wherever you put it. -->
-<audio id="bg-audio" loop preload="none" autoplay>
+<audio id="bg-audio" loop preload="metadata" muted>
   <source src="otd-njerae.mp3" type="audio/mpeg">
 </audio>
 <div id="music-player">
@@ -493,15 +493,38 @@ setInterval(()=>spawnHeart(heartLayer,false), 900);
 const audio = document.getElementById('bg-audio');
 const playBtn = document.getElementById('play-toggle');
 let playing = false;
+
+// Auto-play music immediately on page load
+window.addEventListener('load', ()=>{
+  audio.muted = false;
+  audio.play().then(()=>{
+    playing = true;
+    playBtn.textContent='❚❚';
+  }).catch(()=>{
+    // If autoplay is blocked, set up click-to-play
+    document.addEventListener('click', attemptAutoPlay, {once: true});
+  });
+});
+
+function attemptAutoPlay(){
+  audio.muted = false;
+  audio.play().then(()=>{
+    playing = true;
+    playBtn.textContent='❚❚';
+  }).catch(err=>console.log('Audio play failed:', err));
+}
+
 playBtn.addEventListener('click', ()=>{
   if(!playing){
+    audio.muted = false;
     audio.play().catch(()=>{ /* file missing until user adds it */ });
     playBtn.textContent='❚❚';
+    playing = true;
   } else {
     audio.pause();
     playBtn.textContent='▶';
+    playing = false;
   }
-  playing = !playing;
 });
 
 // ---------- gallery uploads ----------
