@@ -81,6 +81,32 @@ h1,h2,h3,.script{font-family:'Great Vibes', cursive; font-weight:400;}
   background:linear-gradient(180deg, var(--night) 0%, #513a72 28%, var(--lavender-deep) 55%, var(--pink-deep) 78%, var(--pink) 100%);
   overflow:hidden;
 }
+   .cloud-layer{
+    position:absolute;
+    inset:0;
+    background:url("clouds.png") repeat-x center;
+    background-size:cover;
+    opacity:0.35;
+    animation:cloudMove 80s linear infinite;
+    z-index:1;
+    pointer-events:none;
+}
+
+.hero-content,
+.florals,
+.scroll-cue{
+    position:relative;
+    z-index:2;
+}
+
+@keyframes cloudMove{
+    from{
+        background-position:0 0;
+    }
+    to{
+        background-position:2000px 0;
+    }
+}
 .hero .stars{ position:absolute; inset:0 0 40% 0; }
 .hero-content{ position:relative; z-index:2; }
 .hero .eyebrow{
@@ -319,6 +345,7 @@ footer{
 <!-- HERO -->
 <section class="hero">
   <div class="stars" id="star-field"></div>
+   <div class="cloud-layer"></div>
   <div class="hero-content">
     <span class="allura" style="font-size: 60px;">Happy National Girlfriend's Day</span>
     <!-- EDIT: HERO TEXT — swap in her name below -->
